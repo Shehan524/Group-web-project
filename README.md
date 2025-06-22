@@ -67,7 +67,8 @@ $dbname = 'taskbuddy_db';
 
 | Login Page | Dashboard | Task Form |
 |------------|-----------|-----------|
-| ![Login](screenshots/login.png) | ![Dashboard](screenshots/dashboard.png) | ![Form](screenshots/add_task.png) |
+| ![Login](![image](https://github.com/user-attachments/assets/4bfb1901-4c19-44ee-87ff-52435643a8f4)
+) | ![Dashboard](screenshots/dashboard.png) | ![Form](screenshots/add_task.png) |
 
 ---
 
