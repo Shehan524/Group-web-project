@@ -5,26 +5,34 @@ include 'db/config.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = htmlspecialchars($_POST['username']);
     $email = htmlspecialchars($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-
-    // Check if email already exists
-    $check = $conn->prepare("SELECT * FROM users WHERE email = ?");
-    $check->bind_param("s", $email);
-    $check->execute();
-    $result = $check->get_result();
-
-    if ($result->num_rows > 0) {
-        echo "Email already registered.";
+    $password = $_POST['password'];
+    
+    // Password validation - minimum 8 characters
+    if (strlen($password) < 8) {
+        $error_message = "Password must be at least 8 characters long.";
     } else {
-        $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $email, $password);
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        if ($stmt->execute()) {
-            $_SESSION['user_id'] = $stmt->insert_id;
-            $_SESSION['username'] = $username;
-            header("Location: dashboard.php");
+        // Check if email already exists
+        $check = $conn->prepare("SELECT * FROM users WHERE email = ?");
+        $check->bind_param("s", $email);
+        $check->execute();
+        $result = $check->get_result();
+
+        if ($result->num_rows > 0) {
+            $error_message = "Email already registered.";
         } else {
-            echo "Registration failed. Please try again.";
+            $stmt = $conn->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $email, $password_hash);
+
+            if ($stmt->execute()) {
+                $_SESSION['user_id'] = $stmt->insert_id;
+                $_SESSION['username'] = $username;
+                header("Location: dashboard.php");
+                exit();
+            } else {
+                $error_message = "Registration failed. Please try again.";
+            }
         }
     }
 }
@@ -176,6 +184,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="email"]::placeholder,
         input[type="password"]::placeholder {
             color: #a0aec0;
+        }
+        
+        /* Password hint styling */
+        .password-hint {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 0.25rem;
+            font-style: italic;
         }
         
         input[type="submit"] {
@@ -404,6 +420,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             z-index: 1;
         }
     </style>
+    
+    <script>
+        // Client-side password validation
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const submitButton = document.querySelector('input[type="submit"]');
+            
+            if (password.length < 8) {
+                submitButton.disabled = true;
+                submitButton.style.opacity = '0.6';
+                submitButton.style.cursor = 'not-allowed';
+                return false;
+            } else {
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+                submitButton.style.cursor = 'pointer';
+                return true;
+            }
+        }
+        
+        // Real-time validation
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordInput = document.getElementById('password');
+            passwordInput.addEventListener('input', validatePassword);
+        });
+    </script>
 </head>
 <body>
     <!-- Floating particles -->
@@ -417,16 +459,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="particle" style="left: 85%; width: 5px; height: 5px; animation-delay: 7s;"></div>
 
     <div class="register-container">
-        <!-- Simple Registration Form -->
+        <!-- Registration Form with Password Validation -->
         <form method="post" action="">
             <h2 class="form-step">Register</h2>
             <?php 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                if ($result->num_rows > 0) {
-                    echo '<div class="error-message">Email already registered.</div>';
-                } elseif (!$stmt->execute()) {
-                    echo '<div class="error-message">Registration failed. Please try again.</div>';
-                }
+            if (isset($error_message)) {
+                echo '<div class="error-message">' . htmlspecialchars($error_message) . '</div>';
             }
             ?>
             <div class="form-group form-step">
@@ -439,7 +477,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
             <div class="form-group form-step">
                 <label for="password">Password:</label>
-                <input type="password" name="password" id="password" required>
+                <input type="password" name="password" id="password" minlength="8" required>
+                <div class="password-hint">Password must be at least 8 characters long</div>
             </div>
             <div class="form-step">
                 <input type="submit" value="Register">
