@@ -1,0 +1,87 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      
+      - name: Create static files for GitHub Pages
+        run: |
+          mkdir -p _site
+          # Copy HTML, CSS, and image files
+          cp -r css/ _site/
+          
+          # Convert PHP files to static HTML
+          for file in *.php; do
+            filename=$(basename -- "$file" .php)
+            echo "Creating static version of $file as ${filename}.html"
+            
+            # Create a simplified HTML version for GitHub Pages
+            cat > "_site/${filename}.html" <<EOT
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskBuddy – Your Daily Task Manager</title>
+  <link rel="icon" href="fav.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container text-center mt-5">
+    <div class="main-content">
+      <h1 class="display-4">TaskBuddy Demo</h1>
+      <p class="lead mt-3">This is a static demo of TaskBuddy. The full functionality requires PHP and MySQL.</p>
+      <div class="alert alert-info">
+        <p>This is a static preview of the TaskBuddy application.</p>
+        <p>To use the full application with all features, please set up the app on a PHP server with MySQL.</p>
+      </div>
+      <div class="mt-4 btn-container">
+        <a href="index.html" class="btn btn-primary btn-lg me-2">Home</a>
+        <a href="https://github.com/\${GITHUB_REPOSITORY}" class="btn btn-outline-primary btn-lg">View Source</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+EOT
+          done
+
+          # Create proper index.html file with more content
+          cp index.php _site/index.html
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 

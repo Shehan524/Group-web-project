@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskBuddy – Dashboard</title>
+  <link rel="icon" href="fav.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <link href="css/style.css" rel="stylesheet">
+  <style>
+    .task-card {
+      border-radius: 10px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .task-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .task-card .card-header {
+      border-radius: 10px 10px 0 0;
+      font-weight: 600;
+    }
+    
+    .task-complete {
+      opacity: 0.7;
+      background-color: #f8f9fa;
+    }
+    
+    .task-complete .card-header {
+      background-color: #198754;
+      color: white;
+    }
+    
+    .priority-high {
+      border-left: 5px solid #dc3545;
+    }
+    
+    .priority-medium {
+      border-left: 5px solid #ffc107;
+    }
+    
+    .priority-low {
+      border-left: 5px solid #0dcaf0;
+    }
+  </style>
+</head>
+<body class="bg-light">
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">TaskBuddy <i class="bi bi-check2-square"></i></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="dashboard.html">Dashboard</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <div class="row">
+      <div class="col-md-8 mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>My Tasks</h2>
+          <div>
+            <a href="#" class="btn btn-primary" onclick="alert('This feature requires PHP and MySQL.')">
+              <i class="bi bi-plus-lg"></i> Add Task
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Search & Filter</h5>
+            <form>
+              <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Search tasks..." disabled>
+              </div>
+              <div class="mb-3">
+                <select class="form-select" disabled>
+                  <option>All Categories</option>
+                  <option>Work</option>
+                  <option>Personal</option>
+                  <option>Shopping</option>
+                  <option>Health</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <select class="form-select" disabled>
+                  <option>All Status</option>
+                  <option>Completed</option>
+                  <option>Pending</option>
+                </select>
+              </div>
+              <button type="button" class="btn btn-sm btn-primary w-100" disabled>Apply Filters</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row">
+      <!-- Task Cards - These would normally be populated from the database -->
+      <div class="col-md-4">
+        <div class="card task-card priority-high">
+          <div class="card-header d-flex justify-content-between">
+            <span>Complete Project</span>
+            <span class="badge bg-danger">High</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Finish the TaskBuddy project and submit for review.</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Due: Aug 31, 2023</small>
+              <span class="badge bg-primary">Work</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-success" disabled>
+              <i class="bi bi-check-lg"></i> Mark Complete
+            </button>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-1" disabled>
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" disabled>
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card task-card priority-medium">
+          <div class="card-header d-flex justify-content-between">
+            <span>Buy Groceries</span>
+            <span class="badge bg-warning text-dark">Medium</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">Get milk, eggs, bread, and vegetables from the store.</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Due: Aug 25, 2023</small>
+              <span class="badge bg-info text-dark">Shopping</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent d-flex justify-content-between">
+            <button class="btn btn-sm btn-outline-success" disabled>
+              <i class="bi bi-check-lg"></i> Mark Complete
+            </button>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-1" disabled>
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" disabled>
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card task-card priority-low task-complete">
+          <div class="card-header d-flex justify-content-between">
+            <span>Morning Exercise</span>
+            <span class="badge bg-info">Low</span>
+          </div>
+          <div class="card-body">
+            <p class="card-text">30 minutes of jogging and stretching exercises.</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">Due: Aug 22, 2023</small>
+              <span class="badge bg-success">Health</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent d-flex justify-content-between">
+            <button class="btn btn-sm btn-success" disabled>
+              <i class="bi bi-check2-all"></i> Completed
+            </button>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-1" disabled>
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" disabled>
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="alert alert-warning mt-4">
+      <i class="bi bi-info-circle-fill"></i>
+      <strong>GitHub Pages Demo:</strong> This is a static demonstration page. 
+      In the actual PHP application, these tasks would be fetched from a MySQL database and all buttons would be functional.
+      <p class="mt-2">Note that GitHub Pages only supports static content (HTML, CSS, JavaScript) and cannot run PHP or connect to databases.</p>
+    </div>
+  </div>
+  
+  <footer class="bg-white py-3 mt-5 border-top">
+    <div class="container text-center">
+      <p class="mb-0">&copy; 2023 TaskBuddy. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 
